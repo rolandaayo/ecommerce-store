@@ -41,30 +41,15 @@ export default function QuickView({ product, onClose, addToCart, selectedSize, s
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6">
             {/* Image Section */}
-            <div className="space-y-4">
-              <div className="aspect-square bg-gray-50 rounded-lg overflow-hidden">
-                <Image 
-                  src={product.image} 
-                  alt={product.name}
-                  width={500}
-                  height={500}
-                  className="w-full h-full object-contain"
-                  style={{ backgroundColor: '#f8f8f8', padding: '1rem' }}
-                />
-              </div>
-              <div className="grid grid-cols-4 gap-2">
-                {[...Array(4)].map((_, i) => (
-                  <div key={i} className="aspect-square bg-gray-50 rounded-lg overflow-hidden">
-                    <Image 
-                      src={product.image} 
-                      alt={`${product.name} view ${i + 1}`}
-                      width={100}
-                      height={100}
-                      className="w-full h-full object-contain cursor-pointer hover:opacity-75"
-                    />
-                  </div>
-                ))}
-              </div>
+            <div className="aspect-square bg-gray-50 rounded-lg overflow-hidden">
+              <Image 
+                src={product.image} 
+                alt={product.name}
+                width={500}
+                height={500}
+                className="w-full h-full object-contain"
+                style={{ backgroundColor: '#f8f8f8', padding: '1rem' }}
+              />
             </div>
 
             {/* Details Section */}
@@ -90,22 +75,6 @@ export default function QuickView({ product, onClose, addToCart, selectedSize, s
 
               <p className="text-black">{product.description}</p>
 
-              {/* Features */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center gap-2 text-sm">
-                  <FaRuler className="text-gray-600" />
-                  <span className="text-black">True to Size</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <FaTruck className="text-gray-600" />
-                  <span className="text-black">Fast Delivery</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <FaShieldAlt className="text-gray-600" />
-                  <span className="text-black">Quality Guarantee</span>
-                </div>
-              </div>
-
               {/* Size Selection */}
               <div>
                 <h3 className="text-sm font-medium text-black mb-2">Select Size</h3>
@@ -115,8 +84,8 @@ export default function QuickView({ product, onClose, addToCart, selectedSize, s
                       key={size}
                       className={`w-10 h-10 rounded-full border transition-all duration-300 ${
                         selectedSize[product.id] === size
-                          ? 'bg-[#304E21] text-white border-[#304E21] font-bold'
-                          : 'hover:border-[#304E21] border-gray-300 hover:bg-[#304E21]/10'
+                          ? 'bg-black text-white border-black font-bold'
+                          : 'hover:border-black border-gray-300 hover:bg-black/10'
                       }`}
                       onClick={() => setSelectedSize(prev => ({ ...prev, [product.id]: size }))}
                     >
@@ -131,14 +100,14 @@ export default function QuickView({ product, onClose, addToCart, selectedSize, s
                 <h3 className="text-sm font-medium text-black mb-2">Quantity</h3>
                 <div className="flex items-center gap-3">
                   <button
-                    className="w-10 h-10 border rounded-md flex items-center justify-center hover:border-blue-600"
+                    className="w-10 h-10 border rounded-md flex items-center justify-center text-black hover:border-black hover:bg-black/5 transition-colors"
                     onClick={() => updateQuantity(product.id, -1)}
                   >
                     -
                   </button>
                   <span className="text-black">{itemQuantities[product.id] || 1}</span>
                   <button
-                    className="w-10 h-10 border rounded-md flex items-center justify-center hover:border-blue-600"
+                    className="w-10 h-10 border rounded-md flex items-center justify-center text-black hover:border-black hover:bg-black/5 transition-colors"
                     onClick={() => updateQuantity(product.id, 1)}
                   >
                     +

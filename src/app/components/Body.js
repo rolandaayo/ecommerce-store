@@ -14,6 +14,13 @@ import {
 import QuickView from "./QuickView";
 import toast from "react-hot-toast";
 import { useCart } from "../context/CartContext";
+import { Goldman } from "next/font/google";
+
+const goldman = Goldman({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export default function Body() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -165,7 +172,23 @@ export default function Body() {
     localStorage.setItem("itemQuantities", JSON.stringify(newQuantities));
   };
 
-  const clearStoredData = () => {
+  const clearStoredData = (paymentReference) => {
+    // Create order data before clearing cart
+    const orderData = {
+      id: Date.now(),
+      date: new Date().toISOString(),
+      status: "processing",
+      items: cartItems,
+      totalAmount: totalAmount,
+      paymentRef: paymentReference,
+    };
+
+    // Get existing orders and add new order
+    const existingOrders = JSON.parse(localStorage.getItem("orders") || "[]");
+    const updatedOrders = [...existingOrders, orderData];
+    localStorage.setItem("orders", JSON.stringify(updatedOrders));
+
+    // Clear cart data
     setCartItems([]);
     setSelectedSize({});
     setItemQuantities({});
@@ -173,6 +196,7 @@ export default function Body() {
     localStorage.removeItem("selectedSizes");
     localStorage.removeItem("itemQuantities");
     setShowCart(false);
+
     toast.success("Payment completed successfully!", {
       duration: 3000,
     });
@@ -192,8 +216,7 @@ export default function Body() {
             icon: "✅",
             duration: 3000,
           });
-          clearStoredData();
-          setShowCart(false);
+          clearStoredData(response.reference);
         },
         onClose: function () {
           toast.error("Transaction was not completed", {
@@ -287,13 +310,15 @@ export default function Body() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: 'url("/images/hero-bg.jpg")',
+            backgroundImage: 'url("/images/image2.jpeg")',
           }}
         >
-          <div className="absolute inset-0 bg-black/40" /> {/* Overlay */}
+          <div className="absolute inset-0 bg-black/60" />
         </div>
         <div className="relative h-full flex flex-col justify-center items-center text-center px-4">
-          <h1 className="text-3xl md:text-5xl font-bold text-[#D6E752] mb-4">
+          <h1
+            className={`text-3xl md:text-5xl font-bold text-[#D6E752] mb-4 ${goldman.className}`}
+          >
             Discover Your Style
           </h1>
           <p className="text-lg md:text-xl text-[#D6E752] mb-8 max-w-2xl">
@@ -306,7 +331,7 @@ export default function Body() {
               const productsSection = document.getElementById("products");
               productsSection.scrollIntoView({ behavior: "smooth" });
             }}
-            className="bg-[#D6E752] text-black px-8 py-3 rounded-full hover:bg-white/90 transition-all duration-300"
+            className="bg-[#D6E752] text-black px-8 py-3 rounded-full hover:bg-white/90 transition-all duration-300 animate-bounce"
           >
             Shop Now
           </button>
@@ -491,8 +516,8 @@ export default function Body() {
                       key={size}
                       className={`w-8 h-8 text-xs md:text-sm border rounded-full flex items-center justify-center transition-all duration-300 ${
                         selectedSize[item.id] === size
-                          ? "bg-[#304E21] text-white border-[#304E21] font-bold"
-                          : "hover:border-[#304E21] border-gray-300 hover:bg-[#304E21]/10"
+                          ? "bg-black text-white border-black font-bold"
+                          : "border-black text-black hover:bg-black hover:text-white"
                       }`}
                       onClick={() =>
                         setSelectedSize({ ...selectedSize, [item.id]: size })
@@ -505,7 +530,7 @@ export default function Body() {
                 <div className="flex items-center justify-center gap-3 mt-3">
                   <div className="flex items-center gap-2">
                     <button
-                      className="w-7 h-7 border rounded-full flex items-center justify-center hover:border-black transition-all duration-300"
+                      className="w-7 h-7 border border-black text-black rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300"
                       onClick={() => updateQuantity(item.id, -1)}
                     >
                       -
@@ -514,7 +539,7 @@ export default function Body() {
                       {itemQuantities[item.id] || 1}
                     </span>
                     <button
-                      className="w-7 h-7 border rounded-full flex items-center justify-center hover:border-black transition-all duration-300"
+                      className="w-7 h-7 border border-black text-black rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300"
                       onClick={() => updateQuantity(item.id, 1)}
                     >
                       +
@@ -541,77 +566,83 @@ export default function Body() {
       {/* Cart Modal */}
       {showCart && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg w-full max-w-md max-h-[80vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
+          <div className="bg-white p-6 rounded-lg w-full max-w-md max-h-[80vh] overflow-y-auto relative">
+            <div className="sticky top-0 bg-white pb-4 border-b flex justify-between items-center">
               <h2 className="text-xl font-bold text-black">Your Cart</h2>
               <FaTimes
-                className="cursor-pointer hover:text-red-500"
+                className="cursor-pointer text-black hover:text-gray-700"
                 onClick={() => setShowCart(false)}
               />
             </div>
-            {cartItems.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-black">Your cart is empty</p>
-                <button
-                  onClick={() => setShowCart(false)}
-                  className="mt-4 text-black hover:text-gray-700"
-                >
-                  Continue Shopping
-                </button>
-              </div>
-            ) : (
-              <>
-                {cartItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center gap-4 mb-4 p-3 border rounded-lg"
-                  >
-                    <div className="w-24 h-24 bg-gray-50 rounded overflow-hidden">
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        width={96}
-                        height={96}
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-black">{item.name}</h3>
-                      <p className="text-sm text-black">Size: {item.size}</p>
-                      <p className="text-sm text-black">
-                        Quantity: {item.quantity || 1}
-                      </p>
-                      <p className="font-bold text-black">
-                        ${item.price * (item.quantity || 1)}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => removeFromCart(item.id)}
-                      className="text-black hover:text-gray-700"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ))}
-                <div className="mt-4 border-t pt-4">
-                  <div className="flex justify-between mb-4">
-                    <span className="font-bold text-black">Total:</span>
-                    <span className="font-bold text-black">${totalAmount}</span>
-                  </div>
+            <div className="mt-4">
+              {cartItems.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-black">Your cart is empty</p>
                   <button
-                    onClick={initializePayment}
-                    disabled={loading}
-                    className={`w-full py-3 rounded-lg transition-colors duration-300 ${
-                      loading
-                        ? "opacity-50 cursor-not-allowed bg-gray-400"
-                        : "bg-green-600 hover:bg-green-700"
-                    } text-white`}
+                    onClick={() => setShowCart(false)}
+                    className="mt-4 text-black hover:text-gray-700"
                   >
-                    {loading ? "Processing..." : "Proceed to Payment"}
+                    Continue Shopping
                   </button>
                 </div>
-              </>
-            )}
+              ) : (
+                <>
+                  {cartItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center gap-4 mb-4 p-3 border rounded-lg"
+                    >
+                      <div className="w-24 h-24 bg-gray-50 rounded overflow-hidden">
+                        <Image
+                          src={item.image}
+                          alt={item.name}
+                          width={96}
+                          height={96}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-black">
+                          {item.name}
+                        </h3>
+                        <p className="text-sm text-black">Size: {item.size}</p>
+                        <p className="text-sm text-black">
+                          Quantity: {item.quantity || 1}
+                        </p>
+                        <p className="font-bold text-black">
+                          ${item.price * (item.quantity || 1)}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => removeFromCart(item.id)}
+                        className="text-black hover:text-gray-700"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                  <div className="mt-4 border-t pt-4">
+                    <div className="flex justify-between mb-4">
+                      <span className="font-bold text-black">Total:</span>
+                      <span className="font-bold text-black">
+                        ${totalAmount}
+                      </span>
+                    </div>
+                    <button
+                      onClick={initializePayment}
+                      disabled={loading}
+                      className={`w-full py-3 rounded-lg transition-colors duration-300 ${
+                        loading
+                          ? "opacity-50 cursor-not-allowed bg-gray-400"
+                          : "bg-green-600 hover:bg-green-700"
+                      } text-white`}
+                    >
+                      {loading ? "Processing..." : "Proceed to Payment"}
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}
