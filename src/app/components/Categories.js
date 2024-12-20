@@ -1,6 +1,7 @@
 'use client'
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { FaArrowRight } from 'react-icons/fa'
 
 export default function Categories() {
@@ -52,7 +53,7 @@ export default function Categories() {
             >
               {/* Category Image */}
               <div className="aspect-[4/3] overflow-hidden">
-                <img
+                <Image
                   src={category.image}
                   alt={category.name}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
@@ -85,7 +86,7 @@ export default function Categories() {
           <h2 className="text-3xl font-bold text-black text-center mb-12">Featured Collections</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="relative h-[300px] rounded-2xl overflow-hidden group">
-              <img
+              <Image
                 src="/images/image0 (7).jpeg"
                 alt="New Arrivals"
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
@@ -104,7 +105,7 @@ export default function Categories() {
             </div>
 
             <div className="relative h-[300px] rounded-2xl overflow-hidden group">
-              <img
+              <Image
                 src="/images/image4.jpeg"
                 alt="Best Sellers"
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
