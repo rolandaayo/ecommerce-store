@@ -14,13 +14,6 @@ import {
 import QuickView from "./QuickView";
 import toast from "react-hot-toast";
 import { useCart } from "../context/CartContext";
-import { Goldman } from "next/font/google";
-
-const goldman = Goldman({
-  weight: ["400", "700"],
-  subsets: ["latin"],
-  display: "swap",
-});
 
 export default function Body() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -317,7 +310,7 @@ export default function Body() {
         </div>
         <div className="relative h-full flex flex-col justify-center items-center text-center px-4">
           <h1
-            className={`text-3xl md:text-5xl font-bold text-[#D6E752] mb-4 ${goldman.className}`}
+            className="text-3xl md:text-5xl font-bold text-[#D6E752] mb-4 font-sans"
           >
             Discover Your Style
           </h1>
