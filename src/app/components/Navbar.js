@@ -83,14 +83,14 @@ export default function Navbar() {
                 className="flex items-center hover:text-blue-500 transition-colors"
               >
                 <FaPhone className="w-3 h-3 mr-2" />
-                <span>+1234567890</span>
+                <span className="text-white">+1234567890</span>
               </a>
               <a
                 href="mailto:info@oxtoyin.com"
                 className="flex items-center hover:text-blue-500 transition-colors"
               >
                 <FaEnvelope className="w-3 h-3 mr-2" />
-                <span>info@oxtoyin.com</span>
+                <span className="text-white">info@oxtoyin.com</span>
               </a>
             </div>
             <div className="flex items-center space-x-4 text-sm">
