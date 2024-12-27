@@ -111,10 +111,12 @@ export default function QuickView({
                     {sizes.map((size) => (
                       <button
                         key={size}
-                        className={`w-10 h-10 rounded-full border transition-all duration-300 ${
+
+                        className={`w-10 h-10 rounded-full border text-black transition-all duration-300 ${
                           selectedSize[product.id] === size
                             ? "bg-black text-white border-black font-bold"
-                            : "hover:border-black border-gray-300 hover:bg-black/10"
+
+                            : "hover:border-black border-black hover:bg-black/10"
                         }`}
                         onClick={() =>
                           setSelectedSize((prev) => ({
